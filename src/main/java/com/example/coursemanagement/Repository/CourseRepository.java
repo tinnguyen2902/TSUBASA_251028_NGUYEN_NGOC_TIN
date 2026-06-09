@@ -10,8 +10,9 @@ import java.util.List;
 
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
-    Page<Course> findByCourseNameContainingIgnoreCaseOrInstructorContainingIgnoreCase(
-            String courseName,
-            String instructor,
-            Pageable pageable);
+//    Page<Course> findByCourseNameContainingIgnoreCaseOrInstructorContainingIgnoreCase(
+//            String courseName,
+//            String instructor,
+//            Pageable pageable);
+    Page<Course> findByCourseName(String name, Pageable pageable);
 }

@@ -37,7 +37,7 @@ public class CourseController {
        Pageable pageable = PageRequest.of(page,pageSize);
        Page<Course> coursePage;
        if (keyword != null && !keyword.isEmpty()){
-           coursePage =  courseRepository.findByCourseNameContainingIgnoreCaseOrInstructorContainingIgnoreCase(keyword,keyword,pageable);
+           coursePage =  courseRepository.findByCourseName(keyword,pageable);
        } else {
            coursePage = courseRepository.findAll(pageable);
        }
