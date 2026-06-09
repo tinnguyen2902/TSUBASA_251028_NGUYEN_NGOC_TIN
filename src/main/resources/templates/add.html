@@ -4,7 +4,7 @@
     <meta charset="UTF-8" xmlns:th="http://www.thymeleaf.org">
     <title>Thêm course mới</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" th:href="@{/css/CreateNew.css}"> </head>
+  <link rel="stylesheet" th:href="@{/Add.css}">
 </head>
 <body>
 <form th:action="@{/course/add}" th:object="${newCourse}" method="POST" enctype="multipart/form-data" class="course-form">
@@ -22,7 +22,7 @@
 
     <div class="form-group">
         <label class="form-label">Thời lượng (giờ) <span class="required-star">*</span></label>
-        <input type="number" th:field="*{duration}" required class="form-input">
+        <input type="text" th:field="*{duration}" min="1" max="500" required class="form-input">
         <small class="help-text">Số nguyên dương (&gt;0) và &le; 500 giờ.</small>
     </div>
 

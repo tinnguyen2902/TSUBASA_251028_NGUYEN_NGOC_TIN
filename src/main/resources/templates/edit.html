@@ -1,10 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Chỉnh sửa khóa học</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/Edit.css}">
 </head>
 <body>
-$END$
+<form th:action="@{/course/edit}" th:object="${editCourse}" method="POST" enctype="multipart/form-data" class="course-form">
+
+    <input type="hidden" th:field="*{id}">
+
+    <div class="form-group">
+        <label class="form-label">Tên khóa học <span class="required-star">*</span></label>
+        <input type="text" th:field="*{courseName}" required class="form-input">
+        <small class="error-text">Độ dài từ 5 đến 100 ký tự.</small>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Giảng viên <span class="required-star">*</span></label>
+        <input type="text" th:field="*{instructor}" required class="form-input">
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Thời lượng (giờ) <span class="required-star">*</span></label>
+        <input type="number" th:field="*{duration}" min="1" max="500" required class="form-input">
+        <small class="help-text">Số nguyên dương (&gt;0) và &le; 500 giờ.</small>
+    </div>
+
+    <div class="form-group-last">
+        <label class="form-label">Ảnh đại diện hiện tại</label>
+
+        <div th:if="*{thumbnail != null and thumbnail != ''}" class="current-thumbnail-wrapper">
+            <img th:src="${#strings.startsWith(editCourse.thumbnail, 'http')} ? *{thumbnail} : @{|/images/${editCourse.thumbnail}|}"
+                 alt="Current Thumbnail"
+                 class="current-thumbnail-img">
+        </div>
+        <input type="file" name="imageFile" accept=".jpg, .jpeg, .png" class="form-input">
+        <small class="help-text">Định dạng: .jpg, .png (Max 5MB) - Để trống nếu giữ nguyên ảnh cũ</small>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn-submit">Lưu thay đổi</button>
+        <a th:href="@{/course}" class="btn-cancel">Hủy</a>
+    </div>
+</form>
 </body>
 </html>

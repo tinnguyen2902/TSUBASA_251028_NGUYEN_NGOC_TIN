@@ -1,10 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Đăng nhập </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/Login.css}">
 </head>
 <body>
-$END$
+
+<div class="login-container">
+    <div class="login-header">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <h2>Đăng Nhập</h2>
+    </div>
+<!--   thông báo lỗi -->
+    <div class="alert" th:if="${param.error}">
+        <i class="fa-solid fa-circle-exclamation"></i> Tài khoản hoặc mật khẩu không chính xác!
+    </div>
+
+    <form th:action="@{/authenticate}" method="POST">
+        <div class="form-group">
+            <label>Tài khoản</label>
+            <i class="fa-solid fa-user"></i>
+            <input type="text" name="username" class="form-control" placeholder="Nhập tên đăng nhập" required>
+        </div>
+
+        <div class="form-group">
+            <label>Mật khẩu</label>
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" name="password" class="form-control" placeholder="Nhập mật khẩu" required>
+        </div>
+
+        <button type="submit" class="btn-login">Đăng nhập</button>
+    </form>
+</div>
+
 </body>
 </html>

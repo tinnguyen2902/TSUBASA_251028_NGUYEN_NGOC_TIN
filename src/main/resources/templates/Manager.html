@@ -1,10 +1,142 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8" >
+    <title>Course Management</title>
+<!--    link liên kết với java và css-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" th:href="@{manager.css}">
+
 </head>
 <body>
-$END$
+<!--  phần đầu hiện logo và trang chủ-->
+<header class="main-header">
+    <a href="/course" class="logo">
+        <i class="fa-solid fa-graduation-cap"></i> Course Management
+    </a>
+    <a href="#" class="nav-home">
+        <i class="fa-solid fa-house"></i> Trang chủ
+    </a>
+</header>
+<!--phần thân chứa danh sách khóa học -->
+<main class="container">
+    <div class="add-course">
+<!--        danh sách khóa học & chức năng thêm-->
+        <div class="table-header-actions">
+            <h1 class="page-title">Danh sách khóa học</h1>
+            <a th:href="@{/course/add}" class="btn-add-new">
+                <i class="fa-solid fa-plus"></i> Thêm khóa học mới
+            </a>
+        </div>
+<!--            ô tìm kiếm và nút tìm kiếm-->
+        <form th:action="@{/course}" method="GET" class="search-wrapper">
+            <div class="search-container">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" name="keyword" th:value="${keyword}" class="search-input"
+                       placeholder="Tìm kiếm theo tên khóa học hoặc giảng viên...">
+            </div>
+            <button type="submit" class="search-btn">Tìm kiếm</button>
+        </form>
+<!--       phần bảng-->
+        <table class="course-table">
+            <thead>
+            <tr>
+                <th style="width: 5%">STT</th>
+                <th style="width: 15%">Ảnh đại diện</th>
+                <th style="width: 30%">Tên khóa học</th>
+                <th style="width: 20%">Giảng viên</th>
+                <th style="width: 15%">Thời lượng (giờ)</th>
+                <th style="width: 15%">Thao tác</th>
+            </tr>
+            </thead>
+<!--            phần bảng dưới-->
+            <tbody>
+<!--            kết hợp vòng lặp each & câu lệnh if giúp đưa khóa học ra màn hình-->
+<!--                ở câu lệnh if thì check có rỗng hay không còn each kích hoạt đếm số thứ tự không dùng id để thêm, xóa k bị nhảy cóc-->
+            <tr th:each="c, stat : ${courses}" th:if="${not #lists.isEmpty(courses)}">
+<!--                phân trang 1 trang 5 khóa học-->
+                <td th:text="${(currentPage * 5) + stat.index + 1}">1</td>
+<!--                đưa ảnh ra màn hình-->
+                <td>
+                    <img th:src="${c.thumbnail != null and #strings.startsWith(c.thumbnail, 'http')} ? ${c.thumbnail} : @{|/images/${c.thumbnail}|}"
+                         class="Course-Thumbnail"
+                         alt="avt course"/>
+                </td>
+                <td>
+                    <a href="#" class="course-link" th:text="${c.courseName}">Lập trình Java</a>
+                </td>
+                <td th:text="${c.instructor}">Nguyễn Văn A</td>
+                <td th:text="${c.duration}">60</td>
+                <td>
+                    <div class="action-buttons">
+                        <a th:href="@{/course/edit/{id}(id=${c.id})}" class="btn btn-edit">
+                            <i class="fa-solid fa-pen"></i> Sửa
+                        </a>
+                        <form th:action="@{/course/delete/{id}(id=${c.id})}" method="POST">
+                            <button type="button" class="btn btn-delete" style="border: none; cursor: pointer;" onclick="openConfirmModal(this)">
+                                <i class="fa-solid fa-trash"></i> Xóa
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+<!--            nếu danh sách khóa học trống => hiển thị k có-->
+            <tr th:if="${#lists.isEmpty(courses)}" class="empty-row">
+                <td colspan="6" class="empty-cell">
+                    <i class="fa-solid fa-folder-open empty-icon" ></i>
+                    Không có dữ liệu khóa học nào được tìm thấy.
+                </td>
+            </tr>
+            </tbody>
+        </table>
+<!--        phần hiển thị kết quả tìm kiếm-->
+        <div class="table-footer-actions" th:if="${totalPages > 0}">
+            <p class="entries-info" th:text="'Hiển thị tất cả ' + ${courses.size()} + ' kết quả phù hợp'"></p>
+            <div class="pagination-container">
+                <div class="pagination">
+                    <a th:href="@{/course(page=${currentPage - 1}, keyword=${keyword})}"
+                       th:classappend="${currentPage == 0} ? 'disabled' : ''"
+                       class="page-arrow">&laquo;</a>
+
+                    <a th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                       th:href="@{/course(page=${i}, keyword=${keyword})}"
+                       th:text="${i + 1}"
+                       th:classappend="${i == currentPage} ? 'active' : ''"
+                       class="page-number">1</a>
+
+                    <a th:href="@{/course(page=${currentPage + 1}, keyword=${keyword})}"
+                       th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''"
+                       class="page-arrow">&raquo;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!--phần kết -->
+<footer class="site-footer">
+    <div class="footer-left">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span>Course Management System</span>
+    </div>
+    <div class="footer-right">
+        <span>&copy; 2026 All rights reserved.</span>
+    </div>
+</footer>
+<div id="customConfirmModal" class="custom-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3> Xác nhận xóa</h3>
+        </div>
+        <div class="modal-body">
+            <p>Bạn có chắc chắn muốn xóa khóa học này không?</p>
+        </div>
+        <div class="modal-footer">
+            <button id="btnModalCancel" class="btn-m btn-m-cancel">Hủy bỏ</button>
+            <button id="btnModalConfirm" class="btn-m btn-m-delete">Xác nhận</button>
+        </div>
+    </div>
+</div>
+<!--kết nối vs js-->
+<script th:src="@{manager.js}"></script>
 </body>
 </html>
